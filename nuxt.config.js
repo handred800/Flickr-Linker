@@ -38,17 +38,18 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/chakra
     '@chakra-ui/nuxt',
-    // https://go.nuxtjs.dev/emotion
     '@nuxtjs/emotion',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/dayjs',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
-
+  dayjs: {
+    defaultLocale: 'zh-TW'
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
