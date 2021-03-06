@@ -16,6 +16,7 @@ function flickrAPI(apiKey) {
       return axios.get(url);
     },
     getImgSrc(photoData, size = '') {
+      // 尺寸後綴 https://www.flickr.com/services/api/misc.urls.html
       const id = photoData.primary || photoData.id; // album use [primary], photo use [id]
       return `https://farm${photoData.farm}.staticflickr.com/${photoData.server}/${id}_${photoData.secret}${size}.jpg`;
     },

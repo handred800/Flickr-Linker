@@ -79,7 +79,7 @@
               <c-box class="card" v-for="photo in nowAlbumPhotos" :key="photo.id" @click="copyLink(photo.id)">
                 <img :src="getImageUrl(photo)" alt="" class="card-bg">
                 <div class="card-overlay">
-                  <c-input :ref="`input${photo.id}`" isReadOnly variant="filled" :value="getImageUrl(photo)" />
+                  <c-input :ref="`input${photo.id}`" isReadOnly variant="filled" :value="getImageUrl(photo,'_b')" />
                 </div>
               </c-box>
             </c-grid>
@@ -137,8 +137,8 @@ export default {
       document.execCommand('copy');
       this.showToast('複製成功', 'success');
     },
-    getImageUrl(data) {
-      return flickrHandler.getImgSrc(data);
+    getImageUrl(data, size) {
+      return flickrHandler.getImgSrc(data, size);
     },
     timeStampToFormatDate(timestamp) {
       return this.$dayjs(timestamp * 1000).format("YYYY/MM/DD");
