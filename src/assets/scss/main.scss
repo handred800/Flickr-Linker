@@ -1,0 +1,9 @@
+// style reset
+@import './_reset.scss';
+
+// require
+@import './_variable.scss';
+@import './_basic.scss';
+
+// component
+@import './component/_layout.scss';
