@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "micromodal": "^0.4.6",
+    "smooth-scrollbar": "^8.6.3",
     "vue": "^3.0.0"
   },
   "devDependencies": {

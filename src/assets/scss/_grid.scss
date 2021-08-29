@@ -1,0 +1,19 @@
+.row{
+    display: flex;
+    flex-wrap: wrap;
+    .column{
+        flex: 1 0 auto;
+        width: 100%;
+        padding: 0 8px;
+        margin-bottom: 1rem;
+        box-sizing: border-box;
+
+        @include min-width(768px) {
+            max-width: 33.3333%;
+        }
+
+        @include min-width(1600px) {
+            max-width: 25%;
+        }
+    }
+}

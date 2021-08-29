@@ -1,0 +1,16 @@
+input,select,textarea{
+    display: block;
+    width: 100%;
+    outline: none;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: .8rem;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: .2s;
+    resize: none;
+    &:hover,&:focus{
+        box-shadow: 0 3px 15px -3px rgba(black, .2);
+    }
+}

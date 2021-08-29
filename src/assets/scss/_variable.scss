@@ -1,5 +1,13 @@
-$color-primary: #FF8474;
-$color-primary-light: #ffe2a4;
+$color-primary: #FFABE1;
+$color-primary-light: #FFE6E6;
 $color-secondary: #583D72;
-$color-secondary-light: #9F5F80;
+$color-secondary-light: #A685E2;
 $color-gray-light: #f5edea;
+
+$color-text: #302f2f;
+
+@mixin min-width($width) {
+    @media screen and (min-width: $width) {
+        @content;
+    }
+}
