@@ -1,8 +1,11 @@
 <template>
-  <div class="card">
+  <div class="card" :class="{'card-inactive': isInactive}">
     <img class="card-img" :src="cardImg" alt="">
-    <div class="card-title">
-      {{cardTitle}}
+    <div class="card-addon-top">
+      <slot name="addon-top"></slot>
+    </div>
+    <div class="card-addon-bottom">
+      <slot name="addon-bottom"></slot>
     </div>
   </div>
 </template>
@@ -10,9 +13,11 @@
 <script>
 export default {
   props: {
-    cardTitle: String,
     cardImg: String,
-    cardContent: String,
+    isInactive: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
@@ -27,7 +32,9 @@ export default {
     background-color: #fff;
     box-shadow: 0 3px 15px -3px rgba(black, .2);
     overflow: hidden;
-    cursor: pointer;
+    &.card-inactive{
+      cursor: pointer;
+    }
 
     .card-img{
       position: absolute;
@@ -40,22 +47,28 @@ export default {
       transition: 3s;
     }
 
-    // .card-title{
-    //   position: absolute;
-    //   font-size: 1.3rem;
-    //   bottom: 0;
-    //   padding: .3em .6em;
-    //   font-weight: bold;
-    //   border-radius: 0 8px 0 0;
-    //   color: $color-secondary;
-    //   background-color: #fff;
-    //   z-index: 99;
-    // }
-
     &:hover{
       .card-img{
         transform: translate(-50%,-50%) scale(1.1);
       }
+    }
+
+    %card-addon{
+      position: absolute;
+      z-index: 999;
+    }
+
+    .card-addon-top{
+      @extend %card-addon;
+      right: 10px;
+      top: 10px;
+    }
+
+    .card-addon-bottom{
+      @extend %card-addon;
+      left: 10px;
+      bottom: 10px;
+      width: calc(100% - 20px);
     }
 }
 </style>

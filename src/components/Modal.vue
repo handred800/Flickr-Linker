@@ -19,14 +19,32 @@
 </template>
 
 <script>
+import MicroModal from 'micromodal';
 import Scrollbar from 'smooth-scrollbar';
 
 export default {
   props: {
     modalTitle: String,
   },
+  data() {
+    return {
+      scrollbar: null,
+    };
+  },
   mounted() {
-    Scrollbar.init(document.querySelector('.modal__content'));
+    this.scrollbar = Scrollbar.init(document.querySelector('.modal__content'));
+  },
+  methods: {
+    reset() {
+      this.scrollbar.scrollTo(0, 0);
+    },
+    show() {
+      MicroModal.show('modal', {
+        disableScroll: true,
+        awaitCloseAnimation: true,
+        onShow: (() => this.reset()),
+      });
+    },
   },
 };
 </script>
@@ -49,7 +67,7 @@ export default {
 
 .modal__container {
   width: 100%;
-  padding: 20px;
+  padding: 15px;
   background-color: #fff;
   border-radius: 4px;
   overflow-y: auto;
@@ -86,8 +104,8 @@ export default {
 
 .modal__content {
   height: 100%;
-  max-height: 90vh;
-  padding: 2rem 0;
+  max-height: 75vh;
+  margin: 1rem 0;
   line-height: 1.5;
 }
 
@@ -144,11 +162,11 @@ export default {
 }
 
 .micromodal-slide[aria-hidden="true"] .modal__overlay {
-  animation: mmfadeOut 0.3s cubic-bezier(0, 0, 0.2, 1);
+  animation: mmfadeOut 0.15s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .micromodal-slide[aria-hidden="true"] .modal__container {
-  animation: mmslideOut 0.3s cubic-bezier(0, 0, 0.2, 1);
+  animation: mmslideOut 0.15s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .micromodal-slide .modal__container,

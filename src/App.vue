@@ -2,9 +2,9 @@
   <div class="container">
     <div class="hero">
       <h1>Flickr-Linker</h1>
-      <form @submit.prevent="getAllPhotos">
+      <form @submit.prevent="getAllAlbums">
         <div class="search-input">
-          <input type="text" v-model="username" placeholder="請輸入使用者名稱">
+          <input type="text" v-model="username" :disabled="isloadSearch" placeholder="Enter Username">
         </div>
       </form>
     </div>
@@ -13,18 +13,32 @@
         v-for="album in albums"
         class="column"
         :key="album.id">
-        <card @click="openModal(album)" :card-img="getPhotoUrl(album)"/>
-        <p>{{album.title._content}}</p>
+        <Card :isInactive="true" @click="openModal(album)" :card-img="getPhotoUrl(album)"/>
+        <div class="title">{{album.title._content}}({{album.count_photos}})</div>
+        <div class="subtitle">{{timestampToDate(album.date_create)}}</div>
       </div>
     </div>
-    <Modal :modal-title="modalData.title">123123</Modal>
+    <Modal :modal-title="modalData.title" ref="modal">
+      <div class="row" v-if="modalData.photos.length >= 0">
+        <div class="column" v-for="photo in modalData.photos" :key="photo.id">
+          <Card :card-img="getPhotoUrl(photo)">
+            <template v-slot:addon-top>
+              <button class="btn">🔍</button>
+            </template>
+            <template v-slot:addon-bottom>
+              <input class="input-sm" type="text" :value="getPhotoUrl(photo)" @click="copyInput" readonly>
+            </template>
+          </Card>
+        </div>
+      </div>
+    </Modal>
   </div>
 
 </template>
 
 <script>
-import MicroModal from 'micromodal';
 import apiCreator from '@/assets/api/flickr_api';
+import loadingImg from '../public/loading.gif';
 
 import Card from '@/components/Card.vue';
 import Modal from '@/components/Modal.vue';
@@ -42,36 +56,60 @@ export default {
       albums: [],
       modalData: {
         title: '',
-        data: {},
+        photos: [],
       },
+      isloadSearch: false,
     };
   },
-  mounted() {
-    MicroModal.init({
-      awaitOpenAnimation: true,
-      awaitCloseAnimation: true,
-    });
-  },
+  mounted() {},
   methods: {
-    getAllPhotos() {
+    getAllAlbums() {
+      this.isloadSearch = true;
       api.getUserId(this.username)
         .then(({ data }) => data.user.id)
         .then((uid) => api.getAlbums(uid).then(({ data }) => {
+          this.isloadSearch = false;
           this.albums = data.photosets.photoset;
         }));
     },
-    getPhotoUrl(photoData, size) {
-      return api.getImgSrc(photoData, size);
+    getAllPhotos(uid, albumId) {
+      api.getAlbumPhotos(uid, albumId)
+        .then(({ data }) => data.photoset)
+        .then((photoset) => {
+          this.modalData = {
+            title: photoset.title,
+            photos: photoset.photo,
+          };
+        });
+    },
+    getPhotoUrl(photoData) {
+      const keys = Object.keys(photoData);
+      return keys.includes('isloading') ? loadingImg : api.getImgSrc(photoData);
     },
     openModal(album) {
+      // load placeholder
       this.modalData = {
         title: album.title._content,
+        photos: [],
       };
+      for (let i = 0; i <= album.count_photos; i += 1) {
+        this.modalData.photos.push({
+          id: i,
+          isloading: true,
+        });
+      }
 
-      MicroModal.show('modal', {
-        disableScroll: true,
-        awaitCloseAnimation: true,
-      });
+      this.getAllPhotos(album.owner, album.id);
+      this.$refs.modal.show();
+    },
+    timestampToDate(timestamp) {
+      const date = new Date(parseInt(timestamp * 1000, 10));
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    },
+    copyInput(e) {
+      const $target = e.target;
+      $target.select();
+      document.execCommand('copy');
     },
   },
 };

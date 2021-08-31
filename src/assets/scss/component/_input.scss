@@ -10,7 +10,34 @@ input,select,textarea{
     box-sizing: border-box;
     transition: .2s;
     resize: none;
+    &:not(:disabled) {
+        &:hover,&:focus{
+            box-shadow: 0 3px 15px -3px rgba(black, .2);
+        }
+    }
+    &:disabled{
+        background-color: $color-gray-light;
+    }
+
+    &.input-sm{
+        padding: .5rem .8rem;
+    }
+}
+
+.btn{
+    font-size: 1rem;
+    padding: .65rem;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    transition: .2s;
+    cursor: pointer;
+    
     &:hover,&:focus{
         box-shadow: 0 3px 15px -3px rgba(black, .2);
+        background-color: $color-gray-light;
+    }
+    &:active{
+        background-color: darken($color-gray-light, 10%);
     }
 }
