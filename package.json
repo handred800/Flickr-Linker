@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "micromodal": "^0.4.6",
     "smooth-scrollbar": "^8.6.3",
+    "v-viewer": "^3.0.9",
     "vue": "^3.0.0"
   },
   "devDependencies": {

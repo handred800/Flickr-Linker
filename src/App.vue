@@ -20,13 +20,13 @@
     </div>
     <Modal :modal-title="modalData.title" ref="modal">
       <div class="row" v-if="modalData.photos.length >= 0">
-        <div class="column" v-for="photo in modalData.photos" :key="photo.id">
+        <div class="column" v-for="(photo, index) in modalData.photos" :key="photo.id">
           <Card :card-img="getPhotoUrl(photo)">
-            <template v-slot:addon-top>
-              <button class="btn">🔍</button>
+            <template v-slot:addon-top v-if="!isloadAlbum">
+              <button class="btn" @click="openLightbox(index)">🔍</button>
             </template>
-            <template v-slot:addon-bottom>
-              <input class="input-sm" type="text" :value="getPhotoUrl(photo)" @click="copyInput" readonly>
+            <template v-slot:addon-bottom v-if="!isloadAlbum">
+              <input class="input-sm" type="text" :value="getPhotoUrl(photo,modalData.size)" @click="copyInput" readonly>
             </template>
           </Card>
         </div>
@@ -57,8 +57,10 @@ export default {
       modalData: {
         title: '',
         photos: [],
+        size: '_b',
       },
       isloadSearch: false,
+      isloadAlbum: false,
     };
   },
   mounted() {},
@@ -73,26 +75,28 @@ export default {
         }));
     },
     getAllPhotos(uid, albumId) {
+      this.isloadAlbum = true;
       api.getAlbumPhotos(uid, albumId)
         .then(({ data }) => data.photoset)
         .then((photoset) => {
-          this.modalData = {
+          this.modalData = Object.assign(this.modalData, {
             title: photoset.title,
             photos: photoset.photo,
-          };
+          });
+          this.isloadAlbum = false;
         });
     },
-    getPhotoUrl(photoData) {
+    getPhotoUrl(photoData, size) {
       const keys = Object.keys(photoData);
-      return keys.includes('isloading') ? loadingImg : api.getImgSrc(photoData);
+      return keys.includes('isloading') ? loadingImg : api.getImgSrc(photoData, size);
     },
     openModal(album) {
       // load placeholder
-      this.modalData = {
+      this.modalData = Object.assign(this.modalData, {
         title: album.title._content,
         photos: [],
-      };
-      for (let i = 0; i <= album.count_photos; i += 1) {
+      });
+      for (let i = 0; i < album.count_photos; i += 1) {
         this.modalData.photos.push({
           id: i,
           isloading: true,
@@ -102,6 +106,19 @@ export default {
       this.getAllPhotos(album.owner, album.id);
       this.$refs.modal.show();
     },
+    openLightbox(index) {
+      this.$viewerApi({
+        images: this.PhotosArray,
+        options: {
+          navbar: false,
+          title: false,
+          initialViewIndex: index,
+          toolbar: false,
+          movable: false,
+          transition: false,
+        },
+      });
+    },
     timestampToDate(timestamp) {
       const date = new Date(parseInt(timestamp * 1000, 10));
       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -110,6 +127,13 @@ export default {
       const $target = e.target;
       $target.select();
       document.execCommand('copy');
+    },
+  },
+  computed: {
+    PhotosArray() {
+      const nowPhotos = this.modalData.photos;
+      if (nowPhotos.length <= 0) return [];
+      return nowPhotos.map((photoData) => api.getImgSrc(photoData, this.modalData.size));
     },
   },
 };

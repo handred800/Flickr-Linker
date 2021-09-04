@@ -8,7 +8,7 @@ function flickrAPI(apiKey) {
       return axios.get(url);
     },
     getAlbumPhotos(userId, albumId) {
-      const url = `${domain}photosets.getPhotos&api_key=${apiKey}&user_id=${userId}&photoset_id=${albumId}&format=json&nojsoncallback=?`;
+      const url = `${domain}photosets.getPhotos&api_key=${apiKey}&user_id=${userId}&photoset_id=${albumId}&extras=original_format&format=json&nojsoncallback=?`;
       return axios.get(url);
     },
     getUserId(userName) {
